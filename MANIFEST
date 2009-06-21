@@ -13,5 +13,4 @@ tasks/gem.rake
 tasks/manifest.rake
 tasks/release.rake
 tasks/reversion.rake
-url_escape-2009.06.21.gem
 url_escape.gemspec

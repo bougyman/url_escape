@@ -5,11 +5,11 @@ Gem::Specification.new do |s|
   s.version = "2009.06.21"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Evan Phoenix", "Michael Fellinger"]
+  s.authors = ["Evan Phoenix", "TJ Vanderpoel", "Michael Fellinger"]
   s.date = %q{2009-06-21}
-  s.email = %q{m.fellinger@gmail.com}
+  s.email = %q{manveru@rubyists.com}
   s.extensions = ["ext/extconf.rb"]
-  s.files = ["AUTHORS", "CHANGELOG", "MANIFEST", "README", "Rakefile", "ext/escape.c", "ext/extconf.rb", "tasks/authors.rake", "tasks/bacon.rake", "tasks/changelog.rake", "tasks/copyright.rake", "tasks/gem.rake", "tasks/manifest.rake", "tasks/release.rake", "tasks/reversion.rake", "url_escape-2009.06.21.gem", "url_escape.gemspec"]
+  s.files = ["AUTHORS", "CHANGELOG", "MANIFEST", "README", "Rakefile", "ext/escape.c", "ext/extconf.rb", "tasks/authors.rake", "tasks/bacon.rake", "tasks/changelog.rake", "tasks/copyright.rake", "tasks/gem.rake", "tasks/manifest.rake", "tasks/release.rake", "tasks/reversion.rake", "url_escape.gemspec"]
   s.homepage = %q{http://github.com/bougyman/seedling}
   s.require_paths = ["ext"]
   s.rubygems_version = %q{1.3.4}
