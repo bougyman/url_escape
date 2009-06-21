@@ -101,7 +101,7 @@ static VALUE escape(VALUE self, VALUE str) {
   return outstr;
 }
 
-void Init_unescape() {
+void Init_url_escape() {
   VALUE mod = rb_define_module("URLEscape");
   rb_define_singleton_method(mod, "unescape", unescape, 1);
   rb_define_singleton_method(mod, "escape",   escape,   1);

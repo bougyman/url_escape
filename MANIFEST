@@ -1,0 +1,17 @@
+AUTHORS
+CHANGELOG
+MANIFEST
+README
+Rakefile
+ext/escape.c
+ext/extconf.rb
+tasks/authors.rake
+tasks/bacon.rake
+tasks/changelog.rake
+tasks/copyright.rake
+tasks/gem.rake
+tasks/manifest.rake
+tasks/release.rake
+tasks/reversion.rake
+url_escape-2009.06.21.gem
+url_escape.gemspec
