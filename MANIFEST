@@ -13,4 +13,3 @@ tasks/gem.rake
 tasks/manifest.rake
 tasks/release.rake
 tasks/reversion.rake
-url_escape.gemspec
