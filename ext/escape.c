@@ -124,7 +124,7 @@ static VALUE escape(VALUE self, VALUE str)
       } else if('0' <= lx && lx <= '9') {
         rb_str_buf_cat(outstr, (char *) &lx, 1);
       } else if(lx == ' ') {
-        rb_str_buf_cat(outstr, (char *) &lx, 1);
+        rb_str_buf_cat(outstr, plus, 1); // TODO should be a + or %20 replacement
       } else if(lx == '-' || lx == '_'
           || lx == '.' || lx == '!'
           || lx == '~' || lx == '*'
