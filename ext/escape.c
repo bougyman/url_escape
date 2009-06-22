@@ -103,81 +103,86 @@ const char hex_table[][4] = {
   "%f8", "%f9", "%fa", "%fb", "%fc", "%fd", "%fe", "%ff"
 };
 
+static inline int valid_literal(const char byte) {
+  return ('A' <= byte && byte <= 'Z') ||
+         ('a' <= byte && byte <= 'z') ||
+         ('0' <= byte && byte <= '9') ||
+         byte == '-' ||
+         byte == '_' ||
+         byte == '.';
+
+}
+
 static VALUE escape(VALUE self, VALUE str)
 {
   StringValue(str);
 
   const char* buf = RSTRING_PTR(str);
-  VALUE outstr = rb_str_buf_new(RSTRING_LEN(str) * 3);
-  int len = RSTRING_LEN(str);
-  int i, seeked, wrote;
-  char lx, mx, nx;
-  char l, m;
+  const int len = RSTRING_LEN(str);
+  VALUE outstr = rb_str_buf_new(len);
 
-  for(i = 0; i < len; i++) {
-    seeked = 0;
-    wrote = 0;
-    lx = *buf;
-    l = (lx >> 4) & 0xf; // high 4 bits from lx, eg L from 0xLX
+  int i;
+  char mx, nx;
+  char m;
+
+  for(i = 0; i < len;) {
+    const char byte = buf[i];
+
+    // high 4 bits from byte, eg L from 0xLX
+    const char high_bits = (byte >> 4) & 0xf;
 
     /* (UTF-8 escape, 0x0000-0x007F) */
-    if(0x0 <= l && l <= 0x7) {
-      if(('A' <= lx && lx <= 'Z') || ('a' <= lx && lx <= 'z')) {
-        rb_str_buf_cat(outstr, (char *) &lx, 1);
-        wrote = 1;
-      } else if('0' <= lx && lx <= '9') {
-        rb_str_buf_cat(outstr, (char *) &lx, 1);
-        wrote = 1;
-      } else if(lx == ' ') {
-        rb_str_buf_cat(outstr, plus, 1); // a + or %20 replacement (depending on const plus assignment)
-        wrote = 1;
-      } else if(lx == '-' || lx == '_' || lx == '.') {
-        rb_str_buf_cat(outstr, (char *) &lx, 1);
-        wrote = 1;
+    if(high_bits < 0x8) {
+      if(valid_literal(byte)) {
+        rb_str_buf_cat(outstr, &byte, 1);
+      } else if(byte == ' ') {
+        // a + or %20 replacement (depending on const plus assignment)
+        rb_str_buf_cat(outstr, plus, 1);
       } else { // It's ascii but needs encoding
-        rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
-        wrote = 1;
+        rb_str_buf_cat(outstr, hex_table[byte & 0xff], 3);
       }
+      i++;
+      continue;
     }
-    else {
-      if(i + 1 < len) { // If we have at least one extra byte to consume
-        buf++; // grab another byte
-        seeked++; // keep track of how many extra bytes we've grabbed
-        mx = *buf;
-        m = (mx >> 4) & 0xf;
 
-        /* (UTF-8 escape, 0x0080-0x07FF) */
-        if(0xc <= l && l <= 0xd && 0x8 <= m && m <= 0xb) {
-          rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
-          rb_str_buf_cat(outstr, (char *) &hex_table[mx & 0xff], 3);
-          wrote = 1;
-        }
-        else if(i + 2 < len) { // If we have at least two extra bytes to consume
-          buf++; // grab another byte
-          seeked++; // keep track of how many extra bytes we've grabbed
-          nx = *buf;
+    // Ok, there are UTF-8 prefix bytes, so we need to interpret
+    // them.
+    //
+    // If we have at least one extra byte to consume
+    if(i + 1 < len) {
+      mx = buf[i + 1];
+      m = (mx >> 4) & 0xf;
 
-          /* (UTF-8 escape, 0x0800-0xFFFF) */
-          if(0xe == l && 0x8 <= m && m <= 0xb) {
-            rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
-            rb_str_buf_cat(outstr, (char *) &hex_table[mx & 0xff], 3);
-            rb_str_buf_cat(outstr, (char *) &hex_table[nx & 0xff], 3);
-            wrote = 1;
-          }
+      /* (UTF-8 escape, 0x0080-0x07FF) */
+      if(0xc <= high_bits && high_bits <= 0xd && 0x8 <= m && m <= 0xb) {
+        rb_str_buf_cat(outstr, hex_table[byte & 0xff], 3);
+        rb_str_buf_cat(outstr, hex_table[mx & 0xff], 3);
+        i += 2;
+        continue;
+
+        // If we have at least two extra bytes to consume
+      } else if(i + 2 < len) {
+        nx = buf[i + 2];
+
+        /* (UTF-8 escape, 0x0800-0xFFFF) */
+        if(0xe == high_bits && 0x8 <= m && m <= 0xb) {
+          rb_str_buf_cat(outstr, hex_table[byte & 0xff], 3);
+          rb_str_buf_cat(outstr, hex_table[mx & 0xff], 3);
+          rb_str_buf_cat(outstr, hex_table[nx & 0xff], 3);
+          i += 3;
+          continue;
         }
       }
     }
 
     /* (ISO Latin-1/2/? escape, 0x0080 - x00FF) */
-    if(wrote == 0 && 0x8 <= l && l <= 0xf) {
-      rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
-      wrote = 1;
-      buf -= seeked; // Seek backwards, removing any extra consumed bytes
-      seeked = 0; // Indicate that we haven't moved buf
+    if(0x8 <= high_bits && high_bits <= 0xf) {
+      rb_str_buf_cat(outstr, hex_table[byte & 0xff], 3);
+    } else {
+      // Well crap. Just throw it in I guess...
+      rb_str_buf_cat(outstr, hex_table[byte & 0xff], 3);
     }
-
-    i += seeked;
-    buf++;
+    i++;
   }
 
   return outstr;
