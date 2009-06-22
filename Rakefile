@@ -49,7 +49,7 @@ PROJECT_VERSION =
 # To release the monthly version do:
 # $ PROJECT_VERSION=2009.03 rake release
 
-PROJECT_FILES = FileList[`git ls-files`.split("\n")].exclude('.gitignore')
+PROJECT_FILES = FileList[`git ls-files`.split("\n")].exclude('.gitignore').exclude("url_escape.gemspec")
 
 GEMSPEC = Gem::Specification.new{|s|
   s.name         = "url_escape"

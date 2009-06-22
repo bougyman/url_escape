@@ -5,11 +5,15 @@ README
 Rakefile
 ext/escape.c
 ext/extconf.rb
+spec/helper.rb
+spec/url_escape.rb
 tasks/authors.rake
 tasks/bacon.rake
 tasks/changelog.rake
 tasks/copyright.rake
 tasks/gem.rake
+tasks/gem_installer.rake
 tasks/manifest.rake
 tasks/release.rake
 tasks/reversion.rake
+tasks/setup.rake
