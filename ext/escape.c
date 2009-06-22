@@ -110,60 +110,73 @@ static VALUE escape(VALUE self, VALUE str)
   const char* buf = RSTRING_PTR(str);
   VALUE outstr = rb_str_buf_new(RSTRING_LEN(str));
   int len = RSTRING_LEN(str);
-  int i;
+  int i, seeked, wrote;
   char lx, mx, nx;
   char l, m;
 
   for(i = 0; i < len; i++) {
+    seeked = 0;
+    wrote = 0;
     lx = *buf;
-    l = (lx >> 4) & 0xf;
+    l = (lx >> 4) & 0xf; // high 4 bits from lx, eg L from 0xLX
+
     /* (UTF-8 escape, 0x0000-0x007F) */
     if(0x0 <= l && l <= 0x7) {
       if(('A' <= lx && lx <= 'Z') || ('a' <= lx && lx <= 'z')) {
         rb_str_buf_cat(outstr, (char *) &lx, 1);
+        wrote = 1;
       } else if('0' <= lx && lx <= '9') {
         rb_str_buf_cat(outstr, (char *) &lx, 1);
+        wrote = 1;
       } else if(lx == ' ') {
-        rb_str_buf_cat(outstr, plus, 1); // TODO should be a + or %20 replacement
-      } else if(lx == '-' || lx == '_'
-          || lx == '.' || lx == '!'
-          || lx == '~' || lx == '*'
-          || lx == '\'' || lx == '('
-          || lx == ')') {
+        rb_str_buf_cat(outstr, plus, 1); // a + or %20 replacement (depending on const plus assignment)
+        wrote = 1;
+      } else if(lx == '-' || lx == '_' || lx == '.') {
         rb_str_buf_cat(outstr, (char *) &lx, 1);
+        wrote = 1;
+      } else { // It's ascii but needs encoding
+        rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
+        wrote = 1;
       }
     }
     else {
-      buf++;
-      i++;
-      mx = *buf;
-      m = (mx >> 4) & 0xf;
+      if(i + 1 < len) { // If we have at least one extra byte to consume
+        buf++; // grab another byte
+        seeked++; // keep track of how many extra bytes we've grabbed
+        mx = *buf;
+        m = (mx >> 4) & 0xf;
 
-      /* (UTF-8 escape, 0x0080-0x07FF) */
-      if(0xc <= l && l <= 0xd && 0x8 <= m && m <= 0xb) {
-        rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
-        rb_str_buf_cat(outstr, (char *) &hex_table[mx & 0xff], 3);
-      }
-      else {
-        buf++;
-        i++;
-        nx = *buf;
-
-        /* (UTF-8 escape, 0x0800-0xFFFF) */
-        if(0xe == l && 0x8 <= m && m <= 0xb) {
+        /* (UTF-8 escape, 0x0080-0x07FF) */
+        if(0xc <= l && l <= 0xd && 0x8 <= m && m <= 0xb) {
           rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
           rb_str_buf_cat(outstr, (char *) &hex_table[mx & 0xff], 3);
-          rb_str_buf_cat(outstr, (char *) &hex_table[nx & 0xff], 3);
+          wrote = 1;
         }
-        /* (ISO Latin-1/2/? escape, 0x0080 - x00FF) */
-        else if(0x8 <= l && l <= 0xf) {
-          rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
-          buf -= 2;
-          i -= 2;
+        else if(i + 2 < len) { // If we have at least two extra bytes to consume
+          buf++; // grab another byte
+          seeked++; // keep track of how many extra bytes we've grabbed
+          nx = *buf;
+
+          /* (UTF-8 escape, 0x0800-0xFFFF) */
+          if(0xe == l && 0x8 <= m && m <= 0xb) {
+            rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
+            rb_str_buf_cat(outstr, (char *) &hex_table[mx & 0xff], 3);
+            rb_str_buf_cat(outstr, (char *) &hex_table[nx & 0xff], 3);
+            wrote = 1;
+          }
         }
       }
     }
 
+    /* (ISO Latin-1/2/? escape, 0x0080 - x00FF) */
+    if(wrote == 0 && 0x8 <= l && l <= 0xf) {
+      rb_str_buf_cat(outstr, (char *) &hex_table[lx & 0xff], 3);
+      wrote = 1;
+      buf -= seeked; // Seek backwards, removing any extra consumed bytes
+      seeked = 0; // Indicate that we haven't moved buf
+    }
+
+    i += seeked;
     buf++;
   }
 
