@@ -37,12 +37,14 @@ static inline char hex(char digit) {
 }
 
 static VALUE unescape(VALUE self, VALUE str) {
+  const char* buf;
+  const char* bufend;
+  VALUE outstr;
+
   StringValue(str);
-
-  const char* buf = RSTRING_PTR(str);
-  const char* bufend = buf + RSTRING_LEN(str);
-
-  VALUE outstr = rb_str_buf_new(RSTRING_LEN(str));
+  buf = RSTRING_PTR(str);
+  bufend = buf + RSTRING_LEN(str);
+  outstr = rb_str_buf_new(RSTRING_LEN(str));
 
   while(buf < bufend) {
     if(buf[0] == '%' && buf + 2 <= bufend) {
@@ -115,14 +117,16 @@ static inline int valid_literal(const char byte) {
 
 static VALUE escape(VALUE self, VALUE str)
 {
-  StringValue(str);
-
-  const char* buf = RSTRING_PTR(str);
-  const int len = RSTRING_LEN(str);
-  VALUE outstr = rb_str_buf_new(len);
-
+  char* buf;
+  int len;
+  VALUE outstr;
   int i;
   unsigned char byte_two, byte_three;
+
+  StringValue(str);
+  buf = RSTRING_PTR(str);
+  len = RSTRING_LEN(str);
+  outstr = rb_str_buf_new(len);
 
   for(i = 0; i < len;) {
     const unsigned char byte_one = buf[i];
