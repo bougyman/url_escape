@@ -53,8 +53,14 @@ describe "URLEscape" do
     end
 
     it 'should unescape unicode' do
-      unescape('%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8').
-        should == 'ルビイスと'
+      s = 'ルビイスと'
+      if s.respond_to?(:force_encoding)
+        unescape('%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8').
+          should == s.force_encoding("ASCII-8BIT")
+      else
+        unescape('%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8').
+          should == s
+      end
     end
   end
 end
