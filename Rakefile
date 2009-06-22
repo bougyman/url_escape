@@ -50,17 +50,18 @@ PROJECT_VERSION =
 # To release the monthly version do:
 # $ PROJECT_VERSION=2009.03 rake release
 
-PROJECT_FILES = FileList[`git ls-files`.split("\n")].exclude('.gitignore').exclude("url_escape.gemspec")
-
 GEMSPEC = Gem::Specification.new{|s|
   s.name         = "url_escape"
-  s.authors      = ["Evan Phoenix", "TJ Vanderpoel", "Michael Fellinger"]
+  s.authors      = ["Evan Phoenix", "TJ Vanderpoel", "Michael Fellinger", "Trey Dempsey"]
   s.summary      = "Fast url_escape library written in C"
   s.email        = "manveru@rubyists.com"
   s.homepage     = "http://github.com/bougyman/seedling"
   s.platform     = Gem::Platform::RUBY
   s.version      = PROJECT_VERSION
-  s.files        = PROJECT_FILES
+  s.files        = %w(AUTHORS CHANGELOG MANIFEST README Rakefile) +
+                   Dir['ext/*.{c,h,rb}'] +
+                   Dir['spec/*.rb'] +
+                   Dir['tasks/*.rake']
   s.has_rdoc     = false
   s.extensions   = ['ext/extconf.rb']
   s.require_path = "ext"
