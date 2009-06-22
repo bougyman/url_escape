@@ -1,0 +1,8 @@
+== Synopsis
+A C extension to ruby enabling fast escape/unescape of
+URL Encoded Strings
+
+== Usage
+
+ URLEscape.unescape("a%20string")
+ URLEscape.escape("a string")
