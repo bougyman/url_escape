@@ -54,7 +54,7 @@ describe "URLEscape" do
 
     it 'should unescape unicode' do
       unescape('%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8').
-        should == 'ルビイスと'.force_encoding('ASCII-8BIT') # Output encoding is left to the implementation
+        should == 'ルビイスと'
     end
   end
 end
