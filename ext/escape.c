@@ -108,7 +108,7 @@ static VALUE escape(VALUE self, VALUE str)
   StringValue(str);
 
   const char* buf = RSTRING_PTR(str);
-  VALUE outstr = rb_str_buf_new(RSTRING_LEN(str));
+  VALUE outstr = rb_str_buf_new(RSTRING_LEN(str) * 3);
   int len = RSTRING_LEN(str);
   int i, seeked, wrote;
   char lx, mx, nx;
