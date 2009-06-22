@@ -7,7 +7,8 @@ require 'time'
 require 'date'
 
 PROJECT_SPECS = FileList[
-  'spec/url_escape.rb'
+  'spec/url_escape.rb',
+  'spec/bench.rb'
 ]
 
 PROJECT_MODULE = 'URLEscape'
