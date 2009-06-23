@@ -20,12 +20,22 @@ task :bacon => :setup do
   left_format = "%4d/%d: %-#{len + 11}s"
   spec_format = "%d specifications (%d requirements), %d failures, %d errors"
 
+  $stderr.puts "Executing on windows.  Colors won't work and errors won't be separated.\n" if(RUBY_PLATFORM.match(/mswin/))
+
   specs.each_with_index do |spec, idx|
     print(left_format % [idx + 1, specs_size, spec])
 
-    Open3.popen3(RUBY, spec) do |sin, sout, serr|
-      out = sout.read.strip
-      err = serr.read.strip
+    begin
+      running_spec = nil
+      if(RUBY_PLATFORM.match(/mswin/))
+        running_spec = IO.popen("#{RUBY} #{spec}")
+        out = running_spec.read.strip
+        err = ""
+      else
+        running_spec = Open3.popen3(RUBY, spec)
+        out = running_spec.sout.read.strip
+        err = running_spec.serr.read.strip
+      end
 
       # this is conventional, see spec/innate/state/fiber.rb for usage
       if out =~ /^Bacon::Error: (needed .*)/
@@ -61,6 +71,8 @@ task :bacon => :setup do
           puts err unless err.empty?
         end
       end
+    ensure
+      running_spec.close if(running_spec)
     end
   end
 

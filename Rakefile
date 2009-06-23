@@ -52,6 +52,7 @@ PROJECT_VERSION =
 
 GEMSPEC = Gem::Specification.new{|s|
   s.name         = "url_escape"
+  s.description  = "Fast replacement for CGI.escape and Rack::Utils.escape"
   s.authors      = ["Evan Phoenix", "TJ Vanderpoel", "Michael Fellinger", "Trey Dempsey"]
   s.summary      = "Fast url_escape library written in C"
   s.email        = "manveru@rubyists.com"

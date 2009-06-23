@@ -1,4 +1,8 @@
 desc "Clean compiled remnants"
 task :clean do
-  %w{ext/url_escape.bundle ext/Makefile ext/escape.o ext/url_escape.so}.each { |file| File.unlink(file) if File.file?(file) }
+  make = RUBY_PLATFORM.match(/mswin/) ? "nmake" : "make"
+  Dir.chdir("ext") do
+    sh "#{make} distclean" rescue nil
+    %w{url_escape.bundle url_escape.so.manifest Makefile escape.o rl_escape.so}.each { |file| File.unlink(file) if File.file?(file) }
+  end
 end

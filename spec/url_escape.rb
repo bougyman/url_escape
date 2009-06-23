@@ -42,7 +42,6 @@ describe "URLEscape" do
   end
 
   describe '#unescape' do
-
     def unescape(input)
       URLEscape.unescape input
     end
