@@ -3,7 +3,6 @@ require 'rbconfig'
 ext = File.expand_path("../../ext", __FILE__)
 exec_format = RbConfig::CONFIG['ruby_install_name'].sub('ruby', '%s') rescue '%s'
 
-p exec_format
 system(exec_format % 'rake', 'build')
 
 require File.join(ext, "url_escape")
