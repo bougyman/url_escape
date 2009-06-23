@@ -1,11 +1,10 @@
-ext = File.expand_path("../../ext", __FILE__)
+require 'rbconfig'
 
-Dir.chdir ext do
-  puts %x{make clean}
-  File.unlink("Makefile") if File.file?("Makefile")
-  puts %x{ruby extconf.rb}
-  puts %x{make}
-end
+ext = File.expand_path("../../ext", __FILE__)
+exec_format = RbConfig::CONFIG['ruby_install_name'].sub('ruby', '%s') rescue '%s'
+
+p exec_format
+system(exec_format % 'rake', 'build')
 
 require File.join(ext, "url_escape")
 
