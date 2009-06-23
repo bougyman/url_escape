@@ -59,13 +59,12 @@ GEMSPEC = Gem::Specification.new{|s|
   s.homepage     = "http://github.com/bougyman/seedling"
   s.platform     = Gem::Platform::RUBY
   s.version      = PROJECT_VERSION
-  s.files        = %w(AUTHORS CHANGELOG MANIFEST README Rakefile) +
+  s.files        = %w(RELEASE AUTHORS CHANGELOG MANIFEST README Rakefile) +
                    Dir['ext/*.{c,h,rb}'] +
                    Dir['spec/*.rb'] +
                    Dir['tasks/*.rake']
   s.has_rdoc     = false
   s.extensions   = ['ext/extconf.rb']
-  s.add_dependency 'rack'
   s.require_path = "ext"
 }
 

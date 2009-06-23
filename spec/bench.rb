@@ -3,11 +3,12 @@ require 'benchmark'
 require 'rack'
 require 'cgi'
 
+
 describe "URLEscape benchmark" do
-  def benchit(obj, meth)
+  def benchit(obj, meth, s = nil)
+    n = 100
+    s ||= "%03a" * 10000
     bm = Benchmark.bmbm { |b|
-      n = 100
-      s = "%03a" * 10000
       b.report("#{obj.name}::#{meth}") { n.times{ obj.send(meth, s) } }
     }
   end
