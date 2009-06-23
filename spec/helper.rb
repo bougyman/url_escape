@@ -1,9 +1,3 @@
-require "rubygems"
-require "bacon"
-
-Bacon.summary_at_exit
-
-
 ext = File.expand_path("../../ext", __FILE__)
 
 Dir.chdir ext do
@@ -14,3 +8,8 @@ Dir.chdir ext do
 end
 
 require File.join(ext, "url_escape")
+
+require "rubygems"
+require "bacon"
+
+Bacon.summary_at_exit
