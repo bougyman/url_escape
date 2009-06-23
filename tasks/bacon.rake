@@ -25,54 +25,49 @@ task :bacon => :setup do
   specs.each_with_index do |spec, idx|
     print(left_format % [idx + 1, specs_size, spec])
 
-    begin
-      running_spec = nil
-      if(RUBY_PLATFORM.match(/mswin/))
-        running_spec = IO.popen("#{RUBY} #{spec}")
-        out = running_spec.read.strip
-        err = ""
-      else
-        running_spec = Open3.popen3(RUBY, spec)
-        out = running_spec.sout.read.strip
-        err = running_spec.serr.read.strip
+    if(RUBY_PLATFORM.match(/mswin/))
+      running_spec = IO.popen("#{RUBY} #{spec}")
+      out = running_spec.read.strip
+      err = ""
+    else
+      sin, sout, serr = Open3.popen3(RUBY, spec)
+      out = sout.read.strip
+      err = serr.read.strip
+    end
+
+    # this is conventional, see spec/innate/state/fiber.rb for usage
+    if out =~ /^Bacon::Error: (needed .*)/
+      puts(yellow % ("%6s %s" % ['', $1]))
+    else
+      total = nil
+
+      out.each_line do |line|
+        scanned = line.scanf(spec_format)
+
+        next unless scanned.size == 4
+
+        total = Vector[*scanned]
+        break
       end
 
-      # this is conventional, see spec/innate/state/fiber.rb for usage
-      if out =~ /^Bacon::Error: (needed .*)/
-        puts(yellow % ("%6s %s" % ['', $1]))
-      else
-        total = nil
+      if total
+        totals += total
+        tests, assertions, failures, errors = total_array = total.to_a
 
-        out.each_line do |line|
-          scanned = line.scanf(spec_format)
-
-          next unless scanned.size == 4
-
-          total = Vector[*scanned]
-          break
-        end
-
-        if total
-          totals += total
-          tests, assertions, failures, errors = total_array = total.to_a
-
-          if tests > 0 && failures + errors == 0
-            puts((green % "%6d passed") % tests)
-          else
-            some_failed = true
-            puts(red % "       failed")
-            puts out unless out.empty?
-            puts err unless err.empty?
-          end
+        if tests > 0 && failures + errors == 0
+          puts((green % "%6d passed") % tests)
         else
           some_failed = true
           puts(red % "       failed")
           puts out unless out.empty?
           puts err unless err.empty?
         end
+      else
+        some_failed = true
+        puts(red % "       failed")
+        puts out unless out.empty?
+        puts err unless err.empty?
       end
-    ensure
-      running_spec.close if(running_spec)
     end
   end
 
