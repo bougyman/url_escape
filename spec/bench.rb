@@ -15,27 +15,25 @@ describe "URLEscape benchmark" do
   it "runs faster than standard CGI.unescape" do
     one = benchit(URLEscape, :unescape).first
     two = benchit(CGI, :unescape).first
-    p one.real
-    p two.real
-    one.real.should < 20.0 * two.real
+    two.real.should > 25.0 * one.real
   end
 
   it "runs faster than Rack::Utils.unescape" do
     one = benchit(URLEscape, :unescape).first
     two = benchit(Rack::Utils, :unescape).first
-    one.real.should < 20.0 * two.real
+    two.real.should > 25.0 * one.real
   end
 
   it "runs faster than standard CGI.escape" do
     one = benchit(URLEscape, :escape).first
     two = benchit(CGI, :escape).first
-    one.real.should < 20.0 * two.real
+    two.real.should > 15.0 * one.real
   end
 
   it "runs faster than Rack::Utils.escape" do
     one = benchit(URLEscape, :escape).first
     two = benchit(Rack::Utils, :escape).first
-    one.real.should < 20.0 * two.real
+    two.real.should > 15.0 * one.real
   end
 
 end
