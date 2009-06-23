@@ -64,6 +64,7 @@ GEMSPEC = Gem::Specification.new{|s|
                    Dir['tasks/*.rake']
   s.has_rdoc     = false
   s.extensions   = ['ext/extconf.rb']
+  s.add_dependency 'rack'
   s.require_path = "ext"
 }
 
