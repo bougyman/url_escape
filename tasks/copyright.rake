@@ -29,7 +29,7 @@ task :copyright => [:legal] do
    Pathname.glob("Rakefile")).each do |file|
     next if ignore.include? file.expand_path
     lines = file.readlines.map{ |l| l.chomp }
-    if lines.first.match(/^# * \w.*/)
+    if lines.first.match(/^# \* \w.*/)
       @f = lines.shift
     end
     unless lines.first(PROJECT_COPYRIGHT_SUMMARY.size) == PROJECT_COPYRIGHT_SUMMARY
