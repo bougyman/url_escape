@@ -1,6 +1,8 @@
 # * Encoding: UTF-8
 
 require File.expand_path("../helper", __FILE__)
+require "rack"
+require "cgi"
 
 describe "URLEscape" do
   describe '#escape' do
@@ -10,34 +12,66 @@ describe "URLEscape" do
 
     it "should escape a standard ascii string" do
       s = "A standard ascii string."
-      escape(s).should == "A+standard+ascii+string." # This should have spaces escaped
-      escape('a & b').should == "a+%26+b" # This should have spaces escaped and the amp encoded
+      escape(s).should == Rack::Utils.escape(s) # This should have spaces escaped
+      escape(s).should == CGI.escape(s) # This should have spaces escaped
+      escape(s).should == 'A+standard+ascii+string.' # This should have spaces escaped
+      s1 = 'a & b'
+      escape(s1).should == Rack::Utils.escape(s1) # This should have spaces escaped and the amp encoded
+      escape(s1).should == CGI.escape(s1) # This should have spaces escaped and the amp encoded
+      escape(s1).should == 'a+%26+b' # This should have spaces escaped and the amp encoded
     end
 
     it "should escape a very hairy ascii string" do
       s = %q{oi&%$#@!;laksdf\"';:<>?\\}
-      escape(s).should == "oi%26%25%24%23%40%21%3blaksdf%5c%22%27%3b%3a%3c%3e%3f%5c" # This should have lots of escapes
+      escape(s).should == "oi%26%25%24%23%40%21%3Blaksdf%5C%22%27%3B%3A%3C%3E%3F%5C" # This should have lots of escapes
+      escape(s).should == Rack::Utils.escape(s)
+      escape(s).should == CGI.escape(s)
     end
 
     it 'escapes an escaped uri fragment' do
-      escape("%C3%87").should == '%25C3%2587'
+      escape(s = "%C3%87").should == '%25C3%2587'
+      escape(s).should == Rack::Utils.escape(s)
+      escape(s).should == CGI.escape(s)
     end
 
     it 'escapes unicode' do
-      escape('ルビイスと').should == '%e3%83%ab%e3%83%93%e3%82%a4%e3%82%b9%e3%81%a8'
+      escape(s = 'ルビイスと').should == '%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8'
+      escape(s).should == Rack::Utils.escape(s)
+      escape(s).should == CGI.escape(s)
     end
 
     it 'escapes mixed ascii and unicode' do
-      escape("oidfu㈤").should == "oidfu%e3%88%a4"
+      escape(s = "oidfu㈤").should == "oidfu%E3%88%A4"
+      escape(s).should == Rack::Utils.escape(s)
+      escape(s).should == CGI.escape(s)
     end
 
     it 'handles high bit ascii strings' do
-      escape("\xA1oidfu\xB5").should == "%a1oidfu%b5"
+      s = "\xA1oidfu\xB5"
+      if /java/i === RUBY_PLATFORM
+        escape(s).should == "%EF%BF%BDoidfu%EF%BF%BD"
+      else
+        escape(s).should == Rack::Utils.escape(s)
+        escape(s).should == CGI.escape(s)
+        escape(s).should == "%a1oidfu%b5"
+      end
     end
 
     it 'treats strings ending in a unicode starting byte as high bit ascii' do
-      escape("oidfu\xD5").should == "oidfu%d5"
-      escape("\xE1\xB1").should == "%e1%b1" 
+      s = "oidfu\xD5"
+      s1 = "\xE1\xB1"
+      if /java/i === RUBY_PLATFORM
+        escape(s).should == "oidfu%EF%BF%BD"
+        escape(s1).should == "%EF%BF%BD" 
+      else
+        escape(s).should == Rack::Utils.escape(s)
+        escape(s).should == CGI.escape(s)
+        escape(s).should == "oidfu%d5"
+
+        escape(s1).should == Rack::Utils.escape(s1)
+        escape(s1).should == CGI.escape(s1)
+        escape(s1).should == "%e1%b1" 
+      end
     end
   end
 
@@ -49,6 +83,8 @@ describe "URLEscape" do
     it "should unescape a url" do
       s = "http://a.simple.url/foo_bar.php?hey=you%20me"
       unescape(s).should == "http://a.simple.url/foo_bar.php?hey=you me" # This should have spaces expanded
+      unescape(s).should == Rack::Utils.unescape(s)
+      unescape(s).should == CGI.unescape(s)
     end
 
     it 'should unescape unicode' do
@@ -56,9 +92,13 @@ describe "URLEscape" do
       if s.respond_to?(:force_encoding)
         unescape('%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8').
           should == s.force_encoding("ASCII-8BIT")
+        unescape(s).should == Rack::Utils.unescape(s)
+        unescape(s).should == CGI.unescape(s)
       else
         unescape('%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8').
           should == s
+        unescape(s).should == Rack::Utils.unescape(s)
+        unescape(s).should == CGI.unescape(s)
       end
     end
   end

@@ -1,1 +1,8 @@
 .[a-zA-Z]*
+RIDE_*
+tasks/ride.rake
+tasks/rspec.rake
+config/
+pkg/
+script/
+
