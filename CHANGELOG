@@ -1,3 +1,27 @@
+[471517d | 2009-06-24 18:07:53 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * added copyright to the .rb files, and a LICENSE
+
+[fcfd320 | 2009-06-24 18:03:07 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * fixed copyright task
+
+[cdd6fa3 | 2009-06-24 18:02:04 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * added new copyright
+
+[e2906c0 | 2009-06-24 17:36:10 UTC] Jayson Vaughn <jayson@onedrop.(none)>
+
+  * Added myself as an author.  kinda an ego commit
+
+[2c45d0a | 2009-06-24 17:31:28 UTC] Kevin Berry <KevinBerry@nrs.us>
+
+  * modified the RBConfig search to take into account suffixed ruby binaries
+
+[411df7a | 2009-06-24 17:13:50 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * removed gemspec from git, added partial release file
+
 [977c411 | 2009-06-24 17:01:20 UTC] Jayson Vaughn <jayson@onedrop.(none)>
 
   * Corrected typo to set GEMSPEC.version properly
