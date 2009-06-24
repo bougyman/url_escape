@@ -41,15 +41,22 @@ to the web app where it's free to be as slow as it must.
 ### What else?
 
 The ability of large posts to slow down a web application cannot be
-removed by speeding up the POST parser.  In order to alleviate the
+removed by just speeding up the POST parser.  In order to alleviate the
 risk of such large POSTs being used to deny a service, firewall or
 web server throttling or limiting is a more reliable protection to
 enable.  Here are a few examples:
 
-#### Lighttpd
+ * Lighttpd: http://lighttpd.net 
+   * Offers mod_evasive which limits connections per ip, as well as
+     the ability to limit the data rate per connection.
 
-#### Nginx
+ * Nginx: http://nginx.org
+   * Flexible limiting system, per vhost, per user, per connection.
 
-#### Apache
+ * Netfilter/QoS (linux): http://l7-filter.sourceforge.net/
+   * Allow classifiation of HTTP packets so iptables/tc or whatever
+     utility you'd like can have the info it needs about the HTTP 
+     protocol to make limiting/dropping/queueing decisions
 
-#### Netfilter (linux iptables)
+ * Others: Apache, Squid, Litespeed, many others will have various methods
+   of limiting size and frequency of requests.
