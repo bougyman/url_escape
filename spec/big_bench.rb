@@ -12,6 +12,10 @@ describe "Long running benchmarks" do
     }
   end
 
+  def multiplier
+   /java/i === RUBY_PLATFORM ? [3,2] : [7,4]
+  end
+
   it "is efficient on larger encoded sets" do
     hex_table = [
       "%00", "%01", "%02", "%03", "%04", "%05", "%06", "%07",
@@ -51,18 +55,18 @@ describe "Long running benchmarks" do
     s = URLEscape.unescape(hex_table.join)
     one = benchit(URLEscape, :escape, s).first
     two = benchit(Rack::Utils, :escape, s).first
-    two.real.should > 7 * one.real
+    two.real.should > multiplier.first * one.real
 
     three = benchit(CGI, :escape, s).first
-    three.real.should > 7 * one.real
+    three.real.should > multiplier.first * one.real
 
     s = hex_table.join
     one = benchit(URLEscape, :unescape, s).first
     two = benchit(Rack::Utils, :unescape, s).first
-    two.real.should >  4 * one.real
+    two.real.should >  multiplier.last * one.real
 
     three = benchit(CGI, :unescape, s).first
-    three.real.should > 4 * one.real
+    three.real.should > multiplier.last * one.real
   end
 end
 

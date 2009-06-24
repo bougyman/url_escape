@@ -68,6 +68,15 @@ GEMSPEC = Gem::Specification.new{|s|
   s.require_path = "ext"
 }
 
+if RUBY_PLATFORM =~ /mswin/
+  # Win specific stuff
+elsif RUBY_PLATFORM =~ /java/
+  GEMSPEC.platform = 'java'
+  GEMSPEC.files += %w[ lib/url_escape.rb ]
+  GEMSPEC.require_path = "lib"
+  GEMSPEC.extensions = nil
+end
+
 Dir.glob('tasks/*.rake'){|f| import(f) }
 
 task :default => [:bacon]

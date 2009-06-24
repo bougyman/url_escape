@@ -13,28 +13,32 @@ describe "URLEscape benchmark" do
     }
   end
 
+  def multiplier
+   /java/i === RUBY_PLATFORM ? [4,2] : [25,15]
+  end
+
   it "runs faster than standard CGI.unescape" do
     one = benchit(URLEscape, :unescape).first
     two = benchit(CGI, :unescape).first
-    two.real.should > 25.0 * one.real
+    two.real.should > multiplier.first * one.real
   end
 
   it "runs faster than Rack::Utils.unescape" do
     one = benchit(URLEscape, :unescape).first
     two = benchit(Rack::Utils, :unescape).first
-    two.real.should > 25.0 * one.real
+    two.real.should > multiplier.first * one.real
   end
 
   it "runs faster than standard CGI.escape" do
     one = benchit(URLEscape, :escape).first
     two = benchit(CGI, :escape).first
-    two.real.should > 15.0 * one.real
+    two.real.should > multiplier.last * one.real
   end
 
   it "runs faster than Rack::Utils.escape" do
     one = benchit(URLEscape, :escape).first
     two = benchit(Rack::Utils, :escape).first
-    two.real.should > 15.0 * one.real
+    two.real.should > multiplier.last * one.real
   end
 
 end
