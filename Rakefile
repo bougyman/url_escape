@@ -44,7 +44,7 @@ PROJECT_VERSION =
   if version = ENV['PROJECT_VERSION'] || ENV['VERSION']
     version
   else
-    ::VERSION rescue Date.today.strftime("%Y.%m.%d")
+    URLEscape::VERSION rescue Date.today.strftime("%Y.%m.%d")
   end
 
 # To release the monthly version do:
