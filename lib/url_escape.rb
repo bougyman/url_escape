@@ -3,7 +3,7 @@
 # See the LICENSE file which accompanies this software for the full text
 require 'java'
 
-class URLEscape
+module URLEscape
   include_class 'java.net.URLEncoder'
   include_class 'java.net.URLDecoder'
 
