@@ -22,3 +22,34 @@ Rack::Utils::escape 3.880000   0.010000   3.890000 (  3.880745)
 
 URLEscape provides these two methods as a C extension, suitable for
 use on ruby 1.8.6-8 and 1.9.1+; tested on linux, XP, and Vista.  
+
+The jruby version uses the java stdlib's java.net.URLEncoder and 
+URLDecoder.
+
+### Why?
+
+We came across a bottleneck when regression testing FXC (a web app
+which serves configuration information to the FreeSWITCH softswitch)
+where requests were being delayed in our rack middleware, which parses
+the POST data sent by FreeSWITCH and routes requests to the ramaze
+application for processing.  The delay was noticable under loads of
+only 50 req/second, there rack became the bottleneck, not ramaze, the
+db, or any other factor.  Adding the above library (on linux, with
+ruby 1.9.1) removed the delay in rack, pushing the work back to
+to the web app where it's free to be as slow as it must.  
+
+### What else?
+
+The ability of large posts to slow down a web application cannot be
+removed by speeding up the POST parser.  In order to alleviate the
+risk of such large POSTs being used to deny a service, firewall or
+web server throttling or limiting is a more reliable protection to
+enable.  Here are a few examples:
+
+#### Lighttpd
+
+#### Nginx
+
+#### Apache
+
+#### Netfilter (linux iptables)

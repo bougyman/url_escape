@@ -1,3 +1,4 @@
+RELEASE
 AUTHORS
 CHANGELOG
 MANIFEST
@@ -6,6 +7,7 @@ Rakefile
 ext/escape.c
 ext/extconf.rb
 spec/bench.rb
+spec/big_bench.rb
 spec/helper.rb
 spec/url_escape.rb
 tasks/authors.rake

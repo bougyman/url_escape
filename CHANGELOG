@@ -1,136 +1,190 @@
-[fc5a533 | Wed Jun 24 06:56:46 UTC 2009] Michael Fellinger <m.fellinger@gmail.com>
+[977c411 | 2009-06-24 17:01:20 UTC] Jayson Vaughn <jayson@onedrop.(none)>
+
+  * Corrected typo to set GEMSPEC.version properly
+
+[4f5fff3 | 2009-06-24 16:56:58 UTC] Jayson Vaughn <jayson@onedrop.(none)>
+
+  * Updated Rakefile to use the jruby URLEscape library if using jruby
+
+[4b294eb | 2009-06-24 16:02:28 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * removed strings which throw errors on 1.9
+
+[b238261 | 2009-06-24 15:53:22 UTC] Jayson Vaughn <jayson@onedrop.(none)>
+
+  * changed hex_table to be upper case, changed specs to test against hex represented with upper case chars
+
+[3fe98dd | 2009-06-24 15:43:05 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * um, rack does not work as expected, added tests to check rack::utils against our strings, unexpected behavior in 1.9.1
+
+[994c06a | 2009-06-24 15:35:29 UTC] Jayson Vaughn <jayson@onedrop.(none)>
+
+  * added java version and spec changes to support it
+
+[0a51701 | 2009-06-24 02:05:48 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * fixed big_bench
+
+[39d6b2c | 2009-06-23 23:24:32 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * added big_bench.rb for a real-life test of the condition.  on 1.9 (linux X86) the C does not make as much a difference. TODO: test on other platforms
+
+[97949bb | 2009-06-23 22:54:41 UTC] Trey Dempsey <trey.dempsey@gmail.com>
+
+  * Updated build task for ruby 1.9.1 on windows
+
+[19ea12f | 2009-06-23 20:10:47 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+
+  * fixed assertions on benchmarks
+
+[b08d38f | 2009-06-23 19:58:26 UTC] Trey Dempsey <trey.dempsey@gmail.com>
+
+  * Updated build task to check for common issues when building on windows
+
+[9e594c4 | 2009-06-23 19:04:51 UTC] Trey Dempsey <trey.dempsey@gmail.com>
+
+  * Fixed the bacon.rake job so it works correctly in unix.
+
+[3899455 | 2009-06-23 18:50:02 UTC] Trey Dempsey <trey.dempsey@gmail.com>
+
+  * * Modified build task to allow for windows
+
+    * Modified bacon to allow for windows
+
+[fc5a533 | 2009-06-24 06:56:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Remove some debugging output
 
-[43332a6 | Wed Jun 24 06:53:44 UTC 2009] Michael Fellinger <m.fellinger@gmail.com>
+[43332a6 | 2009-06-24 06:53:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Make rake build
 
-[37c8c6c | Tue Jun 23 16:42:00 UTC 2009] Trey Dempsey <trey.dempsey@gmail.com>
+[37c8c6c | 2009-06-23 16:42:00 UTC] Trey Dempsey <trey.dempsey@gmail.com>
 
   * Added plus and space to be static as well.
 
-[06481df | Tue Jun 23 16:40:10 UTC 2009] Trey Dempsey <trey.dempsey@gmail.com>
+[06481df | 2009-06-23 16:40:10 UTC] Trey Dempsey <trey.dempsey@gmail.com>
 
   * Fixed issue with rubygems stepping on the extension in ruby >= 1.8.7
 
-[169462c | Tue Jun 23 16:24:11 UTC 2009] TJ Vanderpoel <bougy.man@gmail.com>
+[169462c | 2009-06-23 16:24:11 UTC] TJ Vanderpoel <bougy.man@gmail.com>
 
   * changed load order to fix weirdness in 1.8.7
 
-[472af85 | Wed Jun 24 06:18:18 UTC 2009] Michael Fellinger <m.fellinger@gmail.com>
+[472af85 | 2009-06-24 06:18:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Use block chdir
 
-[7acd33d | Tue Jun 23 16:12:45 UTC 2009] TJ Vanderpoel <bougy.man@gmail.com>
+[7acd33d | 2009-06-23 16:12:45 UTC] TJ Vanderpoel <bougy.man@gmail.com>
 
   * changed require for weird breakage on 1.8.7
 
-[cbb73f7 | Tue Jun 23 14:03:46 UTC 2009] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
+[cbb73f7 | 2009-06-23 14:03:46 UTC] TJ Vanderpoel <TJ Vanderpoel tj@rubyists.com>
 
   * cleaned up bench spec
 
-[a2db063 | Tue Jun 23 00:53:22 UTC 2009] bougyman <bougyman@gotdebt.nationwide-recovery.com>
+[a2db063 | 2009-06-23 00:53:22 UTC] bougyman <bougyman@gotdebt.nationwide-recovery.com>
 
   * added rack dependency
 
-[ca11d2b | Mon Jun 22 22:55:27 UTC 2009] Trey Dempsey <trey.dempsey@gmail.com>
+[ca11d2b | 2009-06-22 22:55:27 UTC] Trey Dempsey <trey.dempsey@gmail.com>
 
   * Started on Rakefile support for Windows
 
-[c8dc880 | Mon Jun 22 21:44:05 UTC 2009] Trey Dempsey <trey.dempsey@gmail.com>
+[c8dc880 | 2009-06-22 21:44:05 UTC] Trey Dempsey <trey.dempsey@gmail.com>
 
   * Reordered variable declaration so that MSVC will compile the code
 
-[0e712a1 | Mon Jun 22 18:38:45 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[0e712a1 | 2009-06-22 18:38:45 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * added authors, cleaned up list for TD
 
-[1dc7ca8 | Mon Jun 22 18:36:47 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[1dc7ca8 | 2009-06-22 18:36:47 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * added bench.rb to spec files
 
-[b0b4c74 | Mon Jun 22 18:35:26 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[b0b4c74 | 2009-06-22 18:35:26 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * added benchmark spec to make sure the speed increase is realized, and a clean rake task
 
-[675acda | Mon Jun 22 18:21:36 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[675acda | 2009-06-22 18:21:36 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * Cleaned up variable names
 
 
 
-[fa88077 | Mon Jun 22 15:48:14 UTC 2009] Evan Phoenix <ephoenix@engineyard.com>
+[fa88077 | 2009-06-22 15:48:14 UTC] Evan Phoenix <ephoenix@engineyard.com>
 
   * Clean up new escape code
 
-[a0509c6 | Mon Jun 22 17:08:32 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[a0509c6 | 2009-06-22 17:08:32 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * added conditional for :force_encoding (for 1.8.6) in spec
 
-[11dda51 | Mon Jun 22 16:58:35 UTC 2009] Trey Dempsey <trey.dempsey@gmail.com>
+[11dda51 | 2009-06-22 16:58:35 UTC] Trey Dempsey <trey.dempsey@gmail.com>
 
   * Fixed specs to work with ruby 1.8
 
-[cc043f9 | Mon Jun 22 16:46:50 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[cc043f9 | 2009-06-22 16:46:50 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * allocate 3 bytes earlier for speed increase
 
-[fbdde47 | Mon Jun 22 16:38:36 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[fbdde47 | 2009-06-22 16:38:36 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * removed gemspec from MANIFEST
 
-[0a4b914 | Mon Jun 22 16:37:14 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[0a4b914 | 2009-06-22 16:37:14 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * removed gemspec from manifest
 
-[8051954 | Mon Jun 22 16:26:26 UTC 2009] Trey Dempsey <trey.dempsey@gmail.com>
+[8051954 | 2009-06-22 16:26:26 UTC] Trey Dempsey <trey.dempsey@gmail.com>
 
   * Completed handling of high-bit ascii and unicode
 
     * Added case of three byte characters
 
-[15f2a7e | Mon Jun 22 14:10:10 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[15f2a7e | 2009-06-22 14:10:10 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * Ignore dotfiles in git
 
-[cfa1884 | Mon Jun 22 14:08:30 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[cfa1884 | 2009-06-22 14:08:30 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * added plus-escaping, setup task for bacon
 
-[858ee57 | Mon Jun 22 13:34:30 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[858ee57 | 2009-06-22 13:34:30 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * added basic functionality specs
 
-[5151cbe | Mon Jun 22 12:37:32 UTC 2009] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
+[5151cbe | 2009-06-22 12:37:32 UTC] TJ Vanderpoel <Jayson Vaughn jv@rubyists.com>
 
   * beginning specs
 
-[cf8cba7 | Mon Jun 22 07:07:48 UTC 2009] Admin <admin@Treys-Mac.home>
+[cf8cba7 | 2009-06-22 07:07:48 UTC] Admin <admin@Treys-Mac.home>
 
   * rewrote escape() to support utf-8 sequences
 
-[f93f211 | Mon Jun 22 02:50:48 UTC 2009] bougyman <bougyman@gotdebt.nationwide-recovery.com>
+[f93f211 | 2009-06-22 02:50:48 UTC] bougyman <bougyman@gotdebt.nationwide-recovery.com>
 
   * added description
 
-[7d52898 | Mon Jun 22 02:50:19 UTC 2009] bougyman <bougyman@gotdebt.nationwide-recovery.com>
+[7d52898 | 2009-06-22 02:50:19 UTC] bougyman <bougyman@gotdebt.nationwide-recovery.com>
 
   * added description
 
-[29fa399 | Mon Jun 22 04:22:42 UTC 2009] Michael Fellinger <m.fellinger@gmail.com>
+[29fa399 | 2009-06-22 04:22:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Fix gemspec
 
-[e767029 | Mon Jun 22 03:03:50 UTC 2009] Michael Fellinger <m.fellinger@gmail.com>
+[e767029 | 2009-06-22 03:03:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Make url_escape ready for release
 
-[1657c23 | Sat Jun 20 18:28:50 UTC 2009] Evan Phoenix <ephoenix@engineyard.com>
+[1657c23 | 2009-06-20 18:28:50 UTC] Evan Phoenix <ephoenix@engineyard.com>
 
   * Pushing version 2 of (un)escaper
 
-[d11fd8f | Sat Jun 20 20:24:25 UTC 2009] bougyman <bougyman@gotdebt.nationwide-recovery.com>
+[d11fd8f | 2009-06-20 20:24:25 UTC] bougyman <bougyman@gotdebt.nationwide-recovery.com>
 
   * first commit
 
