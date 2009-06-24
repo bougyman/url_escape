@@ -26,13 +26,16 @@ task :copyright => [:legal] do
   puts
 
   (Pathname.glob('{controller,model,app,lib,test,spec}/**/*{.rb}') + 
-   Pathname.glob("tasks/*.rake") +
    Pathname.glob("Rakefile")).each do |file|
     next if ignore.include? file.expand_path
     lines = file.readlines.map{ |l| l.chomp }
+    if lines.first.match(/^# * \w.*/)
+      @f = lines.shift
+    end
     unless lines.first(PROJECT_COPYRIGHT_SUMMARY.size) == PROJECT_COPYRIGHT_SUMMARY
       oldlines = file.readlines
-      file.open("w+") { |f| f.puts PROJECT_COPYRIGHT_SUMMARY + oldlines }
+      oldlines.shift if @f
+      file.open("w+") { |f| f.puts @f if @f;f.puts PROJECT_COPYRIGHT_SUMMARY + oldlines }
     end
   end
 end
