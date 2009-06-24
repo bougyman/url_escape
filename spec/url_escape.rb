@@ -37,13 +37,13 @@ describe "URLEscape" do
     it 'escapes unicode' do
       escape(s = 'ルビイスと').should == '%E3%83%AB%E3%83%93%E3%82%A4%E3%82%B9%E3%81%A8'
       escape(s).should == CGI.escape(s)
-      escape(s).should == Rack::Utils.escape(s)
+      escape(s).should == Rack::Utils.escape(s) unless /^1\.9/ === RUBY_VERSION
     end
 
     it 'escapes mixed ascii and unicode' do
       escape(s = "oidfu㈤").should == "oidfu%E3%88%A4"
       escape(s).should == CGI.escape(s)
-      escape(s).should == Rack::Utils.escape(s)
+      escape(s).should == Rack::Utils.escape(s) unless /^1\.9/ === RUBY_VERSION
     end
 
     it 'handles high bit ascii strings' do
@@ -51,8 +51,8 @@ describe "URLEscape" do
       if /java/i === RUBY_PLATFORM
         escape(s).should == "%EF%BF%BDoidfu%EF%BF%BD"
       else
-        escape(s).should == CGI.escape(s)
-        escape(s).should == Rack::Utils.escape(s)
+        escape(s).should == CGI.escape(s) unless /^1\.9/ === RUBY_VERSION
+        escape(s).should == Rack::Utils.escape(s) unless /^1\.9/ === RUBY_VERSION
         escape(s).should == "%A1oidfu%B5"
       end
     end
@@ -64,12 +64,12 @@ describe "URLEscape" do
         escape(s).should == "oidfu%EF%BF%BD"
         escape(s1).should == "%EF%BF%BD" 
       else
-        escape(s).should == CGI.escape(s)
-        escape(s).should == Rack::Utils.escape(s)
+        escape(s).should == CGI.escape(s) unless /^1\.9/ === RUBY_VERSION
+        escape(s).should == Rack::Utils.escape(s) unless /^1\.9/ === RUBY_VERSION
         escape(s).should == "oidfu%D5"
 
-        escape(s1).should == CGI.escape(s1)
-        escape(s1).should == Rack::Utils.escape(s1)
+        escape(s1).should == CGI.escape(s1) unless /^1\.9/ === RUBY_VERSION
+        escape(s1).should == Rack::Utils.escape(s1) unless /^1\.9/ === RUBY_VERSION
         escape(s1).should == "%E1%B1" 
       end
     end
