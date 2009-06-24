@@ -5,4 +5,4 @@ tasks/rspec.rake
 config/
 pkg/
 script/
-
+*.gemspec
