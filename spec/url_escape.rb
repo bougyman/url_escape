@@ -53,7 +53,7 @@ describe "URLEscape" do
       else
         escape(s).should == CGI.escape(s)
         escape(s).should == Rack::Utils.escape(s)
-        escape(s).should == "%a1oidfu%b5"
+        escape(s).should == "%A1oidfu%B5"
       end
     end
 
@@ -66,11 +66,11 @@ describe "URLEscape" do
       else
         escape(s).should == CGI.escape(s)
         escape(s).should == Rack::Utils.escape(s)
-        escape(s).should == "oidfu%d5"
+        escape(s).should == "oidfu%D5"
 
         escape(s1).should == CGI.escape(s1)
         escape(s1).should == Rack::Utils.escape(s1)
-        escape(s1).should == "%e1%b1" 
+        escape(s1).should == "%E1%B1" 
       end
     end
   end
