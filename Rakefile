@@ -1,3 +1,7 @@
+# * Encoding: UTF-8
+# Copyright © 2009 Evan Phoenix and The Rubyists, LLC
+# Distributed under the terms of the MIT license.
+# See the LICENSE file which accompanies this software for the full text
 begin; require 'rubygems'; rescue LoadError; end
 
 require 'rake'
@@ -15,7 +19,7 @@ PROJECT_MODULE = 'URLEscape'
 PROJECT_README = 'README'
 
 PROJECT_COPYRIGHT_SUMMARY = [
- "# Copyright (c) 2009 Evan Phoenix",
+ "# Copyright © 2009 Evan Phoenix and The Rubyists, LLC",
  "# Distributed under the terms of the MIT license.",
  "# See the LICENSE file which accompanies this software for the full text",
 ]

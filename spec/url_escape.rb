@@ -1,4 +1,7 @@
 # * Encoding: UTF-8
+# Copyright © 2009 Evan Phoenix and The Rubyists, LLC
+# Distributed under the terms of the MIT license.
+# See the LICENSE file which accompanies this software for the full text
 
 require File.expand_path("../helper", __FILE__)
 require "rack"
