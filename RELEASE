@@ -1,4 +1,24 @@
 Rack::Utils and CGI escape and unescape performance boost
 =========================================================
 
+As performance boosts are about speed, we'll start with the
+benchmarks.  Here is a run of spec/bench.rb, from the url_escape
+source tree.
 
+Escape
+------
+                      user       system     total       real
+URLEscape::unescape   0.090000   0.000000   0.090000 (  0.089190)
+CGI::unescape         2.820000   0.000000   2.820000 (  2.816234)
+Rack::Utils::unescape 3.140000   0.000000   3.140000 (  3.137291)
+
+Unescape
+--------
+                    user       system     total       real
+URLEscape::escape   0.200000   0.000000   0.200000 (  0.196100)
+CGI::escape         3.830000   0.010000   3.840000 (  3.828438)
+Rack::Utils::escape 3.880000   0.010000   3.890000 (  3.880745)
+
+
+URLEscape provides these two methods as a C extension, suitable for
+use on ruby 1.8.6-8 and 1.9.1+; tested on linux, XP, and Vista.  
