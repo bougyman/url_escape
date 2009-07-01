@@ -4,15 +4,13 @@ Distributed under the terms of the MIT license.
 See the LICENSE file which accompanies this software for the full text
 */
 
-#include "ruby.h"
+#include <jni.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
-#ifndef RSTRING_PTR
-#define RSTRING_PTR(obj) RSTRING(obj)->ptr
-#endif
+#include "URLEscape.h"
 
-#ifndef RSTRING_LEN
-#define RSTRING_LEN(obj) RSTRING(obj)->len
-#endif
 
 static const char space[] = { ' ' };
 static const char plus[] =  { '+' };
@@ -63,41 +61,46 @@ static inline char hex(char digit) {
   return -1;
 }
 
-static VALUE unescape(VALUE self, VALUE str)
+JNIEXPORT jstring JNICALL Java_URLEscape_unescape(JNIEnv *env, jobject object, jstring str)
 {
-  const char* buf;
-  const char* bufend;
-  VALUE outstr;
+  jboolean iscopy;
+  const char *utf_str;
+  char *c_outstr;
+  jstring outstr;
+  long i, len, bytes;
 
-  StringValue(str);
-  buf = RSTRING_PTR(str);
-  bufend = buf + RSTRING_LEN(str);
-  outstr = rb_str_buf_new(RSTRING_LEN(str));
+  utf_str = (*env)->GetStringUTFChars(env, str, &iscopy);
+  len = strlen(utf_str);
+  c_outstr = (char *) calloc(strlen(utf_str), sizeof(char *));
 
-  while(buf < bufend) {
-    if(buf[0] == '%' && buf + 2 <= bufend) {
-      char high = hex(buf[1]);
-      char low =  hex(buf[2]);
+  for(i = 0, bytes = 0; i < len;) {
+    if(utf_str[i] == '%' && i + 2 < len) {
+      char high = hex(utf_str[i + 1]);
+      char low =  hex(utf_str[i + 2]);
 
       if(high >= 0 && low >= 0) {
         const char byte = low + (high << 4);
-        rb_str_buf_cat(outstr, &byte, 1);
-        buf += 3;
+        c_outstr[bytes] = byte;
+        bytes++;
+        i += 3;
         continue;
       }
     }
 
-    if(buf[0] == '+') {
-      rb_str_buf_cat(outstr, space, 1);
+    if(utf_str[i] == '+') {
+      c_outstr[bytes] = ' ';
     } else {
-      rb_str_buf_cat(outstr, buf, 1);
+      c_outstr[bytes] = utf_str[i];
     }
-    buf++;
+    bytes++;
+    i++;
   }
+  (*env)->ReleaseStringUTFChars(env, str, utf_str);
+  outstr = (*env)->NewStringUTF(env, c_outstr);
+  free(c_outstr);
 
   return outstr;
 }
-
 
 static inline int valid_literal(const char byte)
 {
@@ -107,7 +110,6 @@ static inline int valid_literal(const char byte)
          byte == '-' ||
          byte == '_' ||
          byte == '.';
-
 }
 
 static inline int valid_two_byte_utf8(const unsigned char byte_one, const unsigned char byte_two)
@@ -122,7 +124,7 @@ static inline int valid_three_byte_utf8(const unsigned char byte_one, const unsi
           0x80 <= byte_two && byte_two <= 0xbf);
 }
 
-static long count_encoded_chars(char *str, long len)
+static long count_encoded_chars(const char *str, long len)
 {
   unsigned char byte_one, byte_two;
   long count = 0;
@@ -175,32 +177,37 @@ static long count_encoded_chars(char *str, long len)
   return count;
 }
 
-static VALUE escape(VALUE self, VALUE str)
+JNIEXPORT jstring JNICALL Java_URLEscape_escape(JNIEnv *env, jobject object, jstring str)
 {
-  char* buf;
-  long len;
-  VALUE outstr;
-  long i;
-  unsigned char byte_two, byte_three;
+  jboolean iscopy;
+  jstring outstr;
+  const char *utf_str;
+  char *c_outstr;
+  long i, len, bytes;
+  unsigned char byte_one, byte_two, byte_three;
 
-  StringValue(str);
-  buf = RSTRING_PTR(str);
-  len = RSTRING_LEN(str);
+  utf_str = (*env)->GetStringUTFChars(env, str, &iscopy);
+  len = strlen(utf_str);
 
-  outstr = rb_str_buf_new(count_encoded_chars(buf, len));
+  c_outstr = (char *) calloc(count_encoded_chars(utf_str, len) + 1, sizeof(char *));
 
-  for(i = 0; i < len;) {
-    const unsigned char byte_one = buf[i];
+  for(i = 0, bytes = 0; i < len;) {
+    byte_one = utf_str[i];
 
     /* (UTF-8 escape, 0x0000-0x007F) */
     if(byte_one < 0x80) {
       if(valid_literal(byte_one)) {
-        rb_str_buf_cat(outstr, buf+i, 1);
+        c_outstr[bytes] = byte_one;
+        bytes++;
       } else if(byte_one == ' ') {
         /* a + or %20 replacement (depending on const plus assignment) */
-        rb_str_buf_cat(outstr, plus, 1);
+        c_outstr[bytes] = plus[0];
+        bytes++;
       } else { /* It's ascii but needs encoding */
-        rb_str_buf_cat(outstr, hex_table[byte_one], 3);
+        c_outstr[bytes] = hex_table[byte_one][0];
+        c_outstr[bytes + 1] = hex_table[byte_one][1];
+        c_outstr[bytes + 2] = hex_table[byte_one][2];
+        bytes += 3;
       }
       i++;
       continue;
@@ -209,24 +216,36 @@ static VALUE escape(VALUE self, VALUE str)
     /* Ok, there are UTF-8 prefix bytes, so we need to interpret them. */
     /* If we have at least one extra byte to consume */
     if(i + 1 < len) {
-      byte_two = buf[i + 1];
+      byte_two = utf_str[i + 1];
 
       /* (UTF-8 escape, 0x0080-0x07FF) */
       if(valid_two_byte_utf8(byte_one, byte_two)) {
-        rb_str_buf_cat(outstr, hex_table[byte_one], 3);
-        rb_str_buf_cat(outstr, hex_table[byte_two], 3);
+        c_outstr[bytes] = hex_table[byte_one][0];
+        c_outstr[bytes + 1] = hex_table[byte_one][1];
+        c_outstr[bytes + 2] = hex_table[byte_one][2];
+        c_outstr[bytes + 3] = hex_table[byte_two][0];
+        c_outstr[bytes + 4] = hex_table[byte_two][1];
+        c_outstr[bytes + 5] = hex_table[byte_two][2];
+        bytes += 6;
         i += 2;
         continue;
 
       /* If we have at least two extra bytes to consume */
       } else if(i + 2 < len) {
-        byte_three = buf[i + 2];
+        byte_two = utf_str[i + 2];
 
         /* (UTF-8 escape, 0x0800-0xFFFF) */
         if(valid_three_byte_utf8(byte_one, byte_two)) {
-          rb_str_buf_cat(outstr, hex_table[byte_one], 3);
-          rb_str_buf_cat(outstr, hex_table[byte_two], 3);
-          rb_str_buf_cat(outstr, hex_table[byte_three], 3);
+          c_outstr[bytes] = hex_table[byte_one][0];
+          c_outstr[bytes + 1] = hex_table[byte_one][1];
+          c_outstr[bytes + 2] = hex_table[byte_one][2];
+          c_outstr[bytes + 3] = hex_table[byte_two][0];
+          c_outstr[bytes + 4] = hex_table[byte_two][1];
+          c_outstr[bytes + 5] = hex_table[byte_two][2];
+          c_outstr[bytes + 6] = hex_table[byte_three][0];
+          c_outstr[bytes + 7] = hex_table[byte_three][1];
+          c_outstr[bytes + 8] = hex_table[byte_three][2];
+          bytes += 9;
           i += 3;
           continue;
         }
@@ -235,19 +254,23 @@ static VALUE escape(VALUE self, VALUE str)
 
     /* (ISO Latin-1/2/? escape, 0x0080 - x00FF) */
     if(0x80 <= byte_one) {
-      rb_str_buf_cat(outstr, hex_table[byte_one], 3);
+      c_outstr[bytes] = hex_table[byte_one][0];
+      c_outstr[bytes + 1] = hex_table[byte_one][1];
+      c_outstr[bytes + 2] = hex_table[byte_one][2];
     } else {
       /* Well crap. Just throw it in I guess... */
-      rb_str_buf_cat(outstr, hex_table[byte_one], 3);
+      c_outstr[bytes] = hex_table[byte_one][0];
+      c_outstr[bytes + 1] = hex_table[byte_one][1];
+      c_outstr[bytes + 2] = hex_table[byte_one][2];
     }
+    bytes += 3;
     i++;
   }
+  c_outstr[bytes] = (char)NULL;
+
+  (*env)->ReleaseStringUTFChars(env, str, utf_str);
+  outstr = (*env)->NewStringUTF(env, c_outstr);
+  free(c_outstr);
 
   return outstr;
-}
-
-void Init_url_escape() {
-  VALUE mod = rb_define_module("URLEscape");
-  rb_define_singleton_method(mod, "unescape", unescape, 1);
-  rb_define_singleton_method(mod, "escape",   escape,   1);
 }
