@@ -5,8 +5,8 @@ require 'rbconfig'
 
 unless RUBY_PLATFORM.match(/java/)
   ext = File.expand_path("../../ext", __FILE__)
-  rake = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'].sub(/ruby/, 'rake'))
-  system("#{rake} build")
+  ruby = File.join(RbConfig::CONFIG['bindir'], RbConfig::CONFIG['ruby_install_name'])
+  %x{#{ruby} -e "begin; require 'rake'; rescue LoadError; require 'rubygems'; require 'rake'; end; Rake.application.run" build}
 
   require File.join(ext, "url_escape")
 else
