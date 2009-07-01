@@ -34,8 +34,8 @@ def mswin_gotchas
   end
 
   config_h = [
-    File.join(RbConfig::CONFIG["archdir"], "config.h"),
-    File.join(RbConfig::CONFIG["rubyhdrdir"], RbConfig::CONFIG["arch"], "ruby", "config.h")
+    File.join(RbConfig::CONFIG["archdir"].to_s, "config.h"),
+    File.join(RbConfig::CONFIG["rubyhdrdir"].to_s, RbConfig::CONFIG["arch"], "ruby", "config.h")
   ].detect { |file| File.exists?(file) }
 
   if(config_h)

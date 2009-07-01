@@ -26,15 +26,14 @@ task :bacon => :setup do
     print(left_format % [idx + 1, specs_size, spec])
 
     if(RUBY_PLATFORM.match(/mswin/))
-      running_spec = IO.popen("#{RUBY} #{spec}")
-      out = running_spec.read.strip
-      err = ""
-    else
-      sin, sout, serr = Open3.popen3(RUBY, spec)
-      out = sout.read.strip
-      err = serr.read.strip
+      puts RUBY
+      system "#{RUBY} #{spec}"
+      next
     end
 
+    sin, sout, serr = Open3.popen3(RUBY, spec)
+    out = sout.read.strip
+    err = serr.read.strip
     # this is conventional, see spec/innate/state/fiber.rb for usage
     if out =~ /^Bacon::Error: (needed .*)/
       puts(yellow % ("%6s %s" % ['', $1]))
